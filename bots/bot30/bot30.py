@@ -13,12 +13,16 @@ liked_meme_photos = [
 
 ] # Массив лайкнутых ссылок на мемы
 
+count_liked = 0
+count_diz = 0
 
 # ---------Клавиатуры---------
 keyboard_mem = VkKeyboard(one_time=False)
 
 # ----Кнопки----
 keyboard_mem.add_button('Мем', color=VkKeyboardColor.SECONDARY)
+keyboard_mem.add_line()
+keyboard_mem.add_button('Статистика', color=VkKeyboardColor.PRIMARY)
 keyboard_mem.add_line()
 keyboard_mem.add_button('Лайк', color=VkKeyboardColor.POSITIVE)
 keyboard_mem.add_button('Дизлайк', color=VkKeyboardColor.NEGATIVE)
@@ -30,13 +34,12 @@ def meme_number_identification(): # Определяем мем
     res = meme_photos[num]
     if res in liked_meme_photos:
         return meme_number_identification()
-    liked_meme_photos.append(res)
     return res
 
 
 def main(): # Основной скрипт
     # try: # Универсальный обход ошибок сервера - при исключении функция перезапускается КОММЕНТИТЬ ПРИ ТЕСТИРОВАНИИИ (иначе не понять в чем ошибка)
-        global meme_photos, liked_meme_photos
+        global meme_photos, liked_meme_photos, count_liked, count_diz
         vk_session = vk_api.VkApi(token = "18d33784d350ef54c52974d857e065eecffdd08f2a62a3fc7675b5b788028665ce691e65ac52b19a8d816", api_version="5.131")
         vk_bot_api = vk_session.get_api()
         longpoll = VkLongPoll(vk_session)    
@@ -56,8 +59,32 @@ def main(): # Основной скрипт
 
                     message = event.text.lower()
                     id = event.user_id
-                    if message == 'Лайк':
+                    if message == 'лайк':
                         liked_meme_photos.append(mem_num)
+                        count_liked += 1
+
+                    print(liked_meme_photos)
+                    print(count_liked, count_diz)
+
+                    if message == 'дизлайк':
+                        liked_meme_photos.append(mem_num)
+                        count_diz += 1
+
+                    print(liked_meme_photos)
+                    print(count_liked, count_diz)
+                    
+                    if message == 'статистика':
+                        stat = f"""Статистика:
+                        Лайки: {count_liked} 👍🏻
+                        Дизлайки: {count_diz} 👎🏻
+                        """
+                        print(count_liked, count_diz)
+                        vk_bot_api.messages.send(peer_id = id,
+                        message=stat,
+                        random_id=get_random_id())
+
+                    print(liked_meme_photos)
+                    print(count_liked, count_diz)
                     
     # except:
     #     main()
