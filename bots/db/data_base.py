@@ -40,7 +40,14 @@ class DB():
     def __update_data(self, user_id, likes, dizlikes):
         DB.__DB_connect()
         try:
-            update_query = "UPDATE vk_bot_users SET "
+            update_query1 = f"UPDATE vk_bot_users SET likes = {likes} WHERE id = {user_id}"
+            update_query2 = f"UPDATE vk_bot_users SET dizlikes = {dizlikes} WHERE id = {user_id}"
+            self.cursor.execute(update_query1)
+            self.cursor.execute(update_query2)
+            print("dt upt")
+            self.bd_con.commit()
+            self.cursor.close()
+
         finally:
             self.db_con.close()
             print("upd dt con close")
@@ -60,8 +67,6 @@ class DB():
             self.db_con.close()
             print("id s con close")  
 
-
-    
 
     def insert_data(self, user_id, likes, dizlikes):
         DB.__DB_connect()

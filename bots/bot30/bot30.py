@@ -41,8 +41,6 @@ def meme_number_identification(): # Определяем мем
     return res
 
 
-
-
 def main(): # Основной скрипт
     # try: # Универсальный обход ошибок сервера - при исключении функция перезапускается КОММЕНТИТЬ ПРИ ТЕСТИРОВАНИИИ (иначе не понять в чем ошибка)
         global meme_photos, liked_meme_photos, count_liked, count_diz, meme_like_flag
