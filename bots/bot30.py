@@ -4,6 +4,7 @@ from random import randint
 from vk_api.utils import get_random_id
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+from db.data_base import DB
 
 
 
@@ -15,8 +16,8 @@ liked_meme_photos = [
 
 ] # Массив лайкнутых ссылок на мемы
 
-count_liked = 0
-count_diz = 0
+all_count_liked = 0
+all_count_diz = 0
 meme_like_flag = False
 
 
@@ -43,7 +44,7 @@ def meme_number_identification(): # Определяем мем
 
 def main(): # Основной скрипт
     # try: # Универсальный обход ошибок сервера - при исключении функция перезапускается КОММЕНТИТЬ ПРИ ТЕСТИРОВАНИИИ (иначе не понять в чем ошибка)
-        global meme_photos, liked_meme_photos, count_liked, count_diz, meme_пrade_flag
+        global meme_photos, liked_meme_photos, all_count_liked, all_count_diz, meme_grade_flag
         vk_session = vk_api.VkApi(token = "18d33784d350ef54c52974d857e065eecffdd08f2a62a3fc7675b5b788028665ce691e65ac52b19a8d816", api_version="5.131")
         vk_bot_api = vk_session.get_api()
         longpoll = VkLongPoll(vk_session)    
@@ -66,26 +67,26 @@ def main(): # Основной скрипт
                     id = event.user_id
                     if message == 'лайк' and meme_like_flag:
                         liked_meme_photos.append(mem_num)
-                        count_liked += 1
-                        meme_like_flag = False
+                        all_count_liked += 1
+                        meme_grade_flag = False
 
                     if message == 'дизлайк' and meme_like_flag:
                         liked_meme_photos.append(mem_num)
-                        count_diz += 1
-                        meme_ranl_flag = False
+                        all_count_diz += 1
+                        meme_grade_flag = False
 
                     if message == 'статистика':
                         stat = f"""Статистика:
-                        Лайки: {count_liked} 👍🏻
-                        Дизлайки: {count_diz} 👎🏻
+                        Лайки: {all_count_liked} 👍🏻
+                        Дизлайки: {all_count_diz} 👎🏻
                         """
-                        print(count_liked, count_diz)
+                        print(all_count_liked, all_count_diz)
                         vk_bot_api.messages.send(peer_id = id,
                         message=stat,
                         random_id=get_random_id())
 
                     print(liked_meme_photos)
-                    print(count_liked, count_diz)
+                    print(all_count_liked, all_count_diz)
                     
     # except:
     #     main()
