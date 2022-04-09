@@ -47,7 +47,9 @@ def main(): # Основной скрипт
         global meme_photos, liked_meme_photos, all_count_liked, all_count_diz, meme_grade_flag
         vk_session = vk_api.VkApi(token = "18d33784d350ef54c52974d857e065eecffdd08f2a62a3fc7675b5b788028665ce691e65ac52b19a8d816", api_version="5.131")
         vk_bot_api = vk_session.get_api()
-        longpoll = VkLongPoll(vk_session)    
+        longpoll = VkLongPoll(vk_session)
+
+        data_base = DB()    
         
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:

@@ -70,6 +70,12 @@ class DB():
             print("id s con close")  
 
 
+    def get_likes(self, user_id):
+        pass
+
+    def get_dizlikes(self, user_id):
+        pass
+
     def insert_data(self, user_id, likes, dizlikes):
         self.__DB_connect()
         try:
