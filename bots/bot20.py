@@ -14,7 +14,9 @@ inline_keyboard6_link = VkKeyboard(one_time=False, inline=True)
 simple_keyboard7_vezdekod = VkKeyboard(one_time=True)
 inline_keyboard8_poll = VkKeyboard(one_time=False, inline=True)
 
-simple_keyboard1_greet.add_button('Привет', color=VkKeyboardColor.SECONDARY)
+simple_keyboard1_greet.add_button('Да, где-то точно виделись', color=VkKeyboardColor.PRIMARY)
+simple_keyboard1_greet.add_line()
+simple_keyboard1_greet.add_button('Нет, впервые вижу', color=VkKeyboardColor.SECONDARY)
 
 simple_keyboard2_loc.add_location_button()
 
@@ -71,7 +73,7 @@ def main():
 					random_id=get_random_id(),
 					peer_id=id,
 					keyboard=simple_keyboard1_greet.get_keyboard(),
-					message="Здравствуйте!",
+					message="Здравствуйте! Мы знакомы?)",
 				)
 		
 		if event.to_me and event.type == VkEventType.MESSAGE_NEW:
