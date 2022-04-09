@@ -23,9 +23,13 @@ class DB():
             print("con close")   
     
 
-    def DB_id_search():
-        DB.__DB_connect()
-
     def DB_insert_data():
 
+
+
     def DB_update_data():
+
+
+
+    def DB_id_search():
+            DB.__DB_connect()
