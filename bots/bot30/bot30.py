@@ -17,7 +17,7 @@ liked_meme_photos = [
 
 count_liked = 0
 count_diz = 0
-meme_like_flag = True
+meme_like_flag = False
 
 
 # ---------Клавиатуры---------
@@ -41,6 +41,8 @@ def meme_number_identification(): # Определяем мем
     return res
 
 
+
+
 def main(): # Основной скрипт
     # try: # Универсальный обход ошибок сервера - при исключении функция перезапускается КОММЕНТИТЬ ПРИ ТЕСТИРОВАНИИИ (иначе не понять в чем ошибка)
         global meme_photos, liked_meme_photos, count_liked, count_diz, meme_like_flag
@@ -54,6 +56,7 @@ def main(): # Основной скрипт
                     message = event.text.lower()
                     id = event.user_id
                     if message == 'мем' or message == 'мемес' or message == 'мемас' or message == 'мемчанский':
+                        meme_like_flag = True
                         mem_num = meme_number_identification()
                         vk_bot_api.messages.send(peer_id = id,
                         message='Лови мем',
@@ -63,20 +66,16 @@ def main(): # Основной скрипт
 
                     message = event.text.lower()
                     id = event.user_id
-                    if message == 'лайк':
+                    if message == 'лайк' and meme_like_flag:
                         liked_meme_photos.append(mem_num)
                         count_liked += 1
+                        meme_like_flag = False
 
-                    print(liked_meme_photos)
-                    print(count_liked, count_diz)
-
-                    if message == 'дизлайк':
+                    if message == 'дизлайк' and meme_like_flag:
                         liked_meme_photos.append(mem_num)
                         count_diz += 1
+                        meme_like_flag = False
 
-                    print(liked_meme_photos)
-                    print(count_liked, count_diz)
-                    
                     if message == 'статистика':
                         stat = f"""Статистика:
                         Лайки: {count_liked} 👍🏻
