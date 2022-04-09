@@ -8,15 +8,24 @@ class DB():
     def __init__(self):
         DB.__DB_connect()
         try:
-            sqlite_create_table_query = '''CREATE TABLE IF NOT EXISTS vk_bot_memes (
+            create_table_query = '''CREATE TABLE IF NOT EXISTS vk_bot_memes (
                                 user_id INTEGER PRIMARY KEY UNIQUE,
                                 dizlikes INTEGER,
                                 likes INTEGER);'''
-        finally:
+
+            self.cursor.execute(create_table_query)
+            print("tb create")
             self.bd_con.commit()
-            self.bd_con.close()    
+            self.cursor.close() 
+
+        finally:
+            self.db_con.close()
+            print("con close")   
     
 
     def DB_id_search():
+        DB.__DB_connect()
 
     def DB_insert_data():
+
+    def DB_update_data():
