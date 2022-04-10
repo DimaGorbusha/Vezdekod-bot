@@ -146,10 +146,10 @@ class DB():
                 query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE likes = {likes[i]}"
                 self.cursor.execute(query)
                 print(self.cursor.fetchall())
-                # res = row[0]
-                # photos.append(res)
+                res = row[0]
+                photos.append(res)
 
-            # return photos
+            return photos
         finally:
             self.db_con.close()
 
@@ -201,6 +201,7 @@ class DB():
     def __update_likes_all(self):
         try:
             res = self.get_likes_all()
+            print(res)
             likes = res[0]
             likes += 1
             update_query = f"UPDATE vk_bot_likes SET likes = {likes} WHERE id = {1}"
@@ -295,6 +296,3 @@ class DB():
             self.cursor.close()
         finally:
             self.db_con.close()
-
-
-    

@@ -65,14 +65,12 @@ def main(): # Основной скрипт
                     id = event.user_id
                     if message == 'лайк' and meme_grade_flag:
                         liked_meme_photos.append(mem_num)
-                        all_count_liked += 1
                         data_base.update_likes(id)
                         meme_grade_flag = False
 
 
                     if message == 'дизлайк' and meme_grade_flag:
                         liked_meme_photos.append(mem_num)
-                        all_count_diz += 1
                         data_base.update_dizlikes(id)
                         meme_grade_flag = False
 
