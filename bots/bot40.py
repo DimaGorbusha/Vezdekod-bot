@@ -5,6 +5,9 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
 
+best_memes = []
+
+
 class VKBot():
     def __init__(self):
         
