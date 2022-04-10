@@ -15,8 +15,6 @@ liked_meme_photos = [
 
 ] # Массив лайкнутых ссылок на мемы
 
-all_count_liked = 0
-all_count_diz = 0
 meme_grade_flag = False
 
 
@@ -42,8 +40,7 @@ def meme_number_identification(): # Определяем мем
 
 
 def main(): # Основной скрипт
-    # try: # Универсальный обход ошибок сервера - при исключении функция перезапускается КОММЕНТИТЬ ПРИ ТЕСТИРОВАНИИИ (иначе не понять в чем ошибка)
-        global meme_photos, liked_meme_photos, all_count_liked, all_count_diz, meme_grade_flag
+        global meme_photos, liked_meme_photos, meme_grade_flag
         vk_session = vk_api.VkApi(token = "18d33784d350ef54c52974d857e065eecffdd08f2a62a3fc7675b5b788028665ce691e65ac52b19a8d816", api_version="5.131")
         vk_bot_api = vk_session.get_api()
         longpoll = VkLongPoll(vk_session)
@@ -99,10 +96,6 @@ def main(): # Основной скрипт
                         vk_bot_api.messages.send(peer_id = id,
                         message=stat,
                         random_id=get_random_id())
-                    
-    # except:
-    #     main()
-
 
 if __name__ == '__main__':
     main()
