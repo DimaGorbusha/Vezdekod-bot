@@ -20,7 +20,7 @@ class DB():
                                 dizlikes INTEGER);'''
 
             create_table_query3 = '''CREATE TABLE IF NOT EXISTS vk_bot_liked_memes (
-                                meme_id TEXT PRIMARY KEY UNIQUE,
+                                meme_id TEXT,
                                 likes INTEGER,
                                 diz INTEGER);'''
 
@@ -49,7 +49,7 @@ class DB():
     def meme_id_exist(self, meme_id):
         self.__DB_connect()
         try:
-            id_search_query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE user_id = {meme_id}"
+            id_search_query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE meme_id = '{meme_id}'"
             self.cursor.execute(id_search_query)
             res = self.cursor.fetchone()
             return res != None
@@ -60,7 +60,7 @@ class DB():
     def get_like_meme(self, meme_id):
         self.__DB_connect()
         try:
-            id_search_query = f"SELECT likes FROM vk_bot_liked_memes WHERE user_id = {meme_id}"
+            id_search_query = f"SELECT likes FROM vk_bot_liked_memes WHERE user_id = '{meme_id}'"
             self.cursor.execute(id_search_query)
             res = self.cursor.fetchone()
             return res
@@ -71,7 +71,7 @@ class DB():
     def get_dizlike_meme(self, meme_id):
         self.__DB_connect()
         try:
-            id_search_query = f"SELECT dizlikes FROM vk_bot_liked_memes WHERE user_id = {meme_id}"
+            id_search_query = f"SELECT dizlikes FROM vk_bot_liked_memes WHERE user_id = '{meme_id}'"
             self.cursor.execute(id_search_query)
             res = self.cursor.fetchone()
             return res
@@ -85,7 +85,7 @@ class DB():
                 res = self.get_like_meme()
                 likes = res[0]
                 likes += 1
-                update_query = f"UPDATE vk_bot_liked_memes SET likes = {likes} WHERE id = {meme_id}"
+                update_query = f"UPDATE vk_bot_liked_memes SET likes = {likes} WHERE id = '{meme_id}'"
                 self.__DB_connect()
                 self.cursor.execute(update_query)
                 self.db_con.commit()
@@ -108,7 +108,7 @@ class DB():
                 res = self.get_dizlike_meme()
                 likes = res[0]
                 likes += 1
-                update_query = f"UPDATE vk_bot_liked_memes SET dizlikes = {likes} WHERE id = {meme_id}"
+                update_query = f"UPDATE vk_bot_liked_memes SET dizlikes = {likes} WHERE id = '{meme_id}'"
                 self.__DB_connect()
                 self.cursor.execute(update_query)
                 self.db_con.commit()
@@ -124,6 +124,34 @@ class DB():
         finally:
             self.db_con.close()
 
+
+    def top_meme(self):
+        try:
+            self.__DB_connect()
+            top_query = "SELECT likes FROM vk_bot_liked_memes"
+            self.cursor.execute(top_query)
+            likes = []
+            photos = []
+            while True:
+                row = self.cursor.fetchone()
+
+                if row == None:
+                    break
+                else:
+                    likes.append(row[0])
+
+            likes.sort(reverse = True)
+            
+            for i in range(len(likes)):
+                query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE likes = {likes[i]}"
+                self.cursor.execute(query)
+                row = self.cursor.fetchone()
+                res = row[0]
+                photos.append(res)
+
+            return photos
+        finally:
+            self.db_con.close()
 
     def get_likes_user(self, user_id):
         self.__DB_connect()

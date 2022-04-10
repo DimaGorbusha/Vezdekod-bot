@@ -16,13 +16,16 @@ liked_meme_photos = [
 ] # Массив лайкнутых ссылок на мемы
 
 meme_grade_flag = False
-
+current_meme = ''
+data_base = DB()
 
 # ---------Клавиатуры---------
 keyboard_mem = VkKeyboard(one_time=False)
 
 # ----Кнопки----
 keyboard_mem.add_button('Мем', color=VkKeyboardColor.SECONDARY)
+keyboard_mem.add_line()
+keyboard_mem.add_button('Топ', color=VkKeyboardColor.SECONDARY)
 keyboard_mem.add_line()
 keyboard_mem.add_button('Статистика', color=VkKeyboardColor.PRIMARY)
 keyboard_mem.add_line()
@@ -31,22 +34,20 @@ keyboard_mem.add_button('Дизлайк', color=VkKeyboardColor.NEGATIVE)
 
 # ---------Основной код----------
 def meme_number_identification(): # Определяем мем
-    global meme_photos, liked_meme_photos
+    global meme_photos, liked_meme_photos, current_meme
     num = randint(0, 49)
-    res = meme_photos[num]
-    if res in liked_meme_photos:
+    current_meme = meme_photos[num]
+    if data_base.meme_id_exist(current_meme):
         return meme_number_identification()
-    return res
 
 
 def main(): # Основной скрипт
-        global meme_photos, liked_meme_photos, meme_grade_flag
+        global meme_photos, liked_meme_photos, meme_grade_flag, current_meme
+        
         vk_session = vk_api.VkApi(token = "18d33784d350ef54c52974d857e065eecffdd08f2a62a3fc7675b5b788028665ce691e65ac52b19a8d816", api_version="5.131")
         vk_bot_api = vk_session.get_api()
         longpoll = VkLongPoll(vk_session)
 
-        data_base = DB()    
-        
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW:
                 if event.to_me:
@@ -54,26 +55,27 @@ def main(): # Основной скрипт
                     id = event.user_id
                     if message == 'мем' or message == 'мемес' or message == 'мемас' or message == 'мемчанский':
                         meme_grade_flag = True
-                        mem_num = meme_number_identification()
+                        meme_number_identification()
                         vk_bot_api.messages.send(peer_id = id,
                         message='Лови мем',
-                        attachment=mem_num,
+                        attachment=current_meme,
                         keyboard=keyboard_mem.get_keyboard(),
                         random_id=get_random_id())
+
+                    if message == 'топ':
+                        data_base.update_likes(id)
+                        meme_grade_flag = False
 
                     message = event.text.lower()
                     id = event.user_id
                     if message == 'лайк' and meme_grade_flag:
-                        liked_meme_photos.append(mem_num)
-                        all_count_liked += 1
                         data_base.update_likes(id)
+                        data_base.update_likes_meme(current_meme)
                         meme_grade_flag = False
 
-
                     if message == 'дизлайк' and meme_grade_flag:
-                        liked_meme_photos.append(mem_num)
-                        all_count_diz += 1
                         data_base.update_dizlikes(id)
+                        data_base.update_dizlikes_meme(current_meme)
                         meme_grade_flag = False
 
                     if message == 'статистика':
