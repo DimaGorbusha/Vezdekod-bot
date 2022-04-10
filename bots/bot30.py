@@ -17,7 +17,7 @@ liked_meme_photos = [
 
 all_count_liked = 0
 all_count_diz = 0
-meme_like_flag = False
+meme_grade_flag = False
 
 
 # ---------Клавиатуры---------
@@ -56,7 +56,7 @@ def main(): # Основной скрипт
                     message = event.text.lower()
                     id = event.user_id
                     if message == 'мем' or message == 'мемес' or message == 'мемас' or message == 'мемчанский':
-                        meme_like_flag = True
+                        meme_grade_flag = True
                         mem_num = meme_number_identification()
                         vk_bot_api.messages.send(peer_id = id,
                         message='Лови мем',
@@ -66,33 +66,39 @@ def main(): # Основной скрипт
 
                     message = event.text.lower()
                     id = event.user_id
-                    if message == 'лайк' and meme_like_flag:
+                    if message == 'лайк' and meme_grade_flag:
                         liked_meme_photos.append(mem_num)
                         all_count_liked += 1
                         data_base.update_likes(id)
                         meme_grade_flag = False
 
 
-                    if message == 'дизлайк' and meme_like_flag:
+                    if message == 'дизлайк' and meme_grade_flag:
                         liked_meme_photos.append(mem_num)
                         all_count_diz += 1
                         data_base.update_dizlikes(id)
                         meme_grade_flag = False
 
                     if message == 'статистика':
+                        likes_us_tuple = data_base.get_likes_user(id)
+                        stat_us_likes = likes_us_tuple[0]
+                        dizlikes_us_tuple = data_base.get_dizlikes_user(id)
+                        stat_us_dizlikes = dizlikes_us_tuple[0]
+
+                        likes_all_tuple = data_base.get_likes_all()
+                        likes_all_stat = likes_all_tuple[0]
+                        dizlikes_all_tuple = data_base.get_dizlikes_all()
+                        dizlikes_all_stat = dizlikes_all_tuple[0]
+
                         stat = f"""Статистика:
-                        Твои лайки: {data_base.get_likes(id)} 👍🏻
-                        Твои дизлайки: {data_base.get_dizlikes(id)} 👎🏻
-                        Общее количество лайков: {all_count_liked}
-                        Общее количество дизлайков: {all_count_diz}
+                        Твои лайки: {stat_us_likes} 👍🏻
+                        Твои дизлайки: {stat_us_dizlikes} 👎🏻
+                        Общее количество лайков: {likes_all_stat}
+                        Общее количество дизлайков: {dizlikes_all_stat}
                         """
-                        print(all_count_liked, all_count_diz)
                         vk_bot_api.messages.send(peer_id = id,
                         message=stat,
                         random_id=get_random_id())
-
-                    print(liked_meme_photos)
-                    print(all_count_liked, all_count_diz)
                     
     # except:
     #     main()

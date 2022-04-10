@@ -8,21 +8,25 @@ class DB():
 
     def __init__(self):
         self.__DB_connect()
-        print("всё ок")
         try:
-            create_table_query = '''CREATE TABLE IF NOT EXISTS vk_bot_users (
+            create_table_query1 = '''CREATE TABLE IF NOT EXISTS vk_bot_users (
                                 user_id INTEGER PRIMARY KEY UNIQUE,
                                 likes INTEGER,
                                 dizlikes INTEGER);'''
 
-            self.cursor.execute(create_table_query)
-            print("tb create")
+            create_table_query2 = '''CREATE TABLE IF NOT EXISTS vk_bot_likes (
+                                id INTEGER PRIMARY KEY UNIQUE,
+                                likes INTEGER,
+                                dizlikes INTEGER);'''
+
+            self.cursor.execute(create_table_query1)
+            self.cursor.execute(create_table_query2)
+
             self.db_con.commit()
             self.cursor.close() 
         
         finally:
             self.db_con.close()
-            print("con close")   
     
 
     def __id_exist(self, user_id):
@@ -34,10 +38,9 @@ class DB():
             return res != None
         finally:
             self.db_con.close()
-            print("id s con close")
 
 
-    def get_likes(self, user_id):
+    def get_likes_user(self, user_id):
         self.__DB_connect()
         try:
             id_search_query = f"SELECT likes FROM vk_bot_users WHERE user_id = {user_id}"
@@ -46,10 +49,9 @@ class DB():
             return res
         finally:
             self.db_con.close()
-            print("g lik con close")
 
 
-    def get_dizlikes(self, user_id):
+    def get_dizlikes_user(self, user_id):
         self.__DB_connect()
         try:
             id_search_query = f"SELECT dizlikes FROM vk_bot_users WHERE user_id = {user_id}"
@@ -58,16 +60,70 @@ class DB():
             return res
         finally:
             self.db_con.close()
-            print("g lik con close")
+
+
+
+    def get_likes_all(self):
+        self.__DB_connect()
+        try:
+            id_search_query = f"SELECT likes FROM vk_bot_likes WHERE id = {1}"
+            self.cursor.execute(id_search_query)
+            res = self.cursor.fetchone()
+            return res
+        finally:
+            self.db_con.close()
+
+
+    def get_dizlikes_all(self):
+        self.__DB_connect()
+        try:
+            id_search_query = f"SELECT dizlikes FROM vk_bot_likes WHERE id = {1}"
+            self.cursor.execute(id_search_query)
+            res = self.cursor.fetchone()
+            return res
+        finally:
+            self.db_con.close()
+
+
+    def __update_likes_all(self):
+        try:
+            res = self.get_likes_all()
+            likes = res[0]
+            likes += 1
+            update_query = f"UPDATE vk_bot_likes SET likes = {likes} WHERE id = {1}"
+            self.__DB_connect()
+            self.cursor.execute(update_query)
+            self.db_con.commit()
+            self.cursor.close()
+            del res
+            del likes
+        finally:
+            self.db_con.close()
+
+
+    def __update_dizlikes_all(self):
+        try:
+            res = self.get_dizlikes_all()
+            dizlikes = res[0]
+            dizlikes += 1
+            update_query = f"UPDATE vk_bot_likes SET dizlikes = {dizlikes} WHERE id = {1}"
+            self.__DB_connect()
+            self.cursor.execute(update_query)
+            self.db_con.commit()
+            self.cursor.close()
+            del res
+            del dizlikes
+        finally:
+            self.db_con.close()
 
 
     def update_likes(self, user_id):
         try:
             if self.__id_exist(user_id):
-                res = self.get_likes(user_id)
+                res = self.get_likes_user(user_id)
                 likes = res[0]
-                print(likes)
                 likes += 1
+                self.__update_likes_all()
                 update_query = f"UPDATE vk_bot_users SET likes = {likes} WHERE user_id = {user_id}"
                 self.__DB_connect()
                 self.cursor.execute(update_query)
@@ -79,16 +135,15 @@ class DB():
                 self.__insert_data(user_id, 1)
         finally:
             self.db_con.close()
-            print("u lik con close")
 
 
     def update_dizlikes(self, user_id):
         try:
             if self.__id_exist(user_id):
-                res = self.get_dizlikes(user_id)
+                res = self.get_dizlikes_user(user_id)
                 dizlikes = res[0]
-                print(dizlikes)
                 dizlikes += 1
+                self.__update_dizlikes_all()
                 update_query = f"UPDATE vk_bot_users SET dizlikes = {dizlikes} WHERE user_id = {user_id}"
                 self.__DB_connect()
                 self.cursor.execute(update_query)
@@ -100,7 +155,6 @@ class DB():
                 self.__insert_data(user_id, 0, 1)
         finally:
             self.db_con.close()
-            print("u dlik con close")
 
     # def __update_data(self, user_id, grade_mode):
     #     self.__DB_connect()
@@ -126,10 +180,8 @@ class DB():
             self.cursor.execute(insert_query, (user_id, likes, dizlikes))
             self.db_con.commit()
             self.cursor.close()
-            print("dt ins ok")
         finally:
             self.db_con.close()
-            print("dt ins con close") 
 
 
     
