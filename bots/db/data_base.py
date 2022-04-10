@@ -19,6 +19,10 @@ class DB():
                                 likes INTEGER,
                                 dizlikes INTEGER);'''
 
+            create_table_query3 = '''CREATE TABLE IF NOT EXISTS vk_bot_liked_memes (
+                                meme_id TEXT PRIMARY KEY UNIQUE,
+                                likes INTEGER);'''
+
             self.cursor.execute(create_table_query1)
             self.cursor.execute(create_table_query2)
 
@@ -36,6 +40,51 @@ class DB():
             self.cursor.execute(id_search_query)
             res = self.cursor.fetchone()
             return res != None
+        finally:
+            self.db_con.close()
+
+
+    def __meme_id_exist(self, meme_id):
+        self.__DB_connect()
+        try:
+            id_search_query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE user_id = {meme_id}"
+            self.cursor.execute(id_search_query)
+            res = self.cursor.fetchone()
+            return res != None
+        finally:
+            self.db_con.close()
+
+    
+    def get_like_meme(self, meme_id):
+        self.__DB_connect()
+        try:
+            id_search_query = f"SELECT likes FROM vk_bot_liked_memes WHERE user_id = {meme_id}"
+            self.cursor.execute(id_search_query)
+            res = self.cursor.fetchone()
+            return res
+        finally:
+            self.db_con.close()
+
+    
+    def update_likes_meme(self, meme_id):
+        try:
+            if self.__meme_id_exist(meme_id):
+                res = self.get_like_meme()
+                likes = res[0]
+                likes += 1
+                update_query = f"UPDATE vk_bot_liked_memes SET likes = {likes} WHERE id = {meme_id}"
+                self.__DB_connect()
+                self.cursor.execute(update_query)
+                self.db_con.commit()
+                self.cursor.close()
+                del res
+                del likes
+            else:
+                insert_query = "INSERT INTO vk_bot_liked_memes VALUES (?, ?)"
+                self.__DB_connect()
+                self.cursor.execute(insert_query, (meme_id, 1))
+                self.db_con.commit()
+                self.cursor.close()
         finally:
             self.db_con.close()
 
