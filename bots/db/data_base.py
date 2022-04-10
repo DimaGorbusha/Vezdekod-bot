@@ -145,11 +145,11 @@ class DB():
             for i in range(len(likes)):
                 query = f"SELECT meme_id FROM vk_bot_liked_memes WHERE likes = {likes[i]}"
                 self.cursor.execute(query)
-                row = self.cursor.fetchone()
-                res = row[0]
-                photos.append(res)
+                print(self.cursor.fetchall())
+                # res = row[0]
+                # photos.append(res)
 
-            return photos
+            # return photos
         finally:
             self.db_con.close()
 
